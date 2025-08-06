@@ -1,0 +1,28 @@
+{
+  "name": "crud-tasks-ayala-santiago",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "node --watch app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SantiagoAyala2118/crud-tasks-ayala-santiago.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/SantiagoAyala2118/crud-tasks-ayala-santiago/issues"
+  },
+  "homepage": "https://github.com/SantiagoAyala2118/crud-tasks-ayala-santiago#readme",
+  "dependencies": {
+    "dotenv": "^17.2.1",
+    "express": "^5.1.0",
+    "mysql2": "^3.14.3",
+    "sequelize": "^6.37.7"
+  }
+}
