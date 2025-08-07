@@ -1,7 +1,5 @@
 import { Sequelize } from "sequelize";
 import dotenv from "dotenv";
-import { Task } from "../models/tasks.model.js";
-import { User } from "../models/users.model.js";
 dotenv.config();
 
 export const sequelize = new Sequelize(
