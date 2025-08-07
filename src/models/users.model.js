@@ -1,6 +1,6 @@
 import { sequelize } from "../config/database.js";
 import { DataTypes } from "sequelize";
-export const Task = sequelize.define("Task", {
+export const User = sequelize.define("User", {
   name: {
     type: DataTypes.STRING(100),
     allowNull: false,
