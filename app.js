@@ -9,10 +9,9 @@ initDB();
 
 const app = express();
 app.use(express.json());
-const PORT = process.env.DB_PORT;
+const PORT = process.env.PORT;
 
-app.use("/users", userRouter);
-app.use("/tasks", taskRouter);
+app.use("/", userRouter, taskRouter);
 
 app.listen(PORT, () => {
   console.log(`Servidor escuchando en http://localhost:${PORT}`);
