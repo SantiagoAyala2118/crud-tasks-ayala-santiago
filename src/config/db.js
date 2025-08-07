@@ -1,5 +1,8 @@
 import { sequelize } from "./database.js";
-import { Task, User } from "../config/database.js";
+import { User } from "../models/users.model.js";
+import { Task } from "../models/tasks.model.js";
+
+
 export const initDB = async () => {
   try {
     await sequelize.authenticate();
