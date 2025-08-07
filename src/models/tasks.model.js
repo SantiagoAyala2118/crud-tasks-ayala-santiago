@@ -11,7 +11,7 @@ export const Task = sequelize.define("Task", {
     allowNull: false,
   },
   isComplete: {
-    type: DataTypes.BOOLEAN,
+    type: DataTypes.BOOLEAN(),
     defaultValue: false,
   },
 });
