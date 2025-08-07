@@ -1,3 +1,4 @@
+import { where } from "sequelize";
 import { Task } from "../models/tasks.model.js";
 
 /*Validación de Datos:
@@ -8,79 +9,83 @@ import { Task } from "../models/tasks.model.js";
 ○ isComplete: Debe ser un valor booleano.
 */
 export const createTask = async (req, res) => {
-  const { title, description } = req.body;
+  try {
+    const { title, description, isComplete } = req.body;
 
-  if (!title || !description) {
-    return res.status(400).json({
-      message: "The title and description are necessary",
-    });
-  }
-
-  //---------------------------------------------------------------TITLE
-  const existingTitle = await Task.findOne({
-    where: title.trim(),
-  });
-  if (existingTitle) {
-    return res.status(400).json({
-      message: "There is already a task with that name, it must be unique",
-    });
-  }
-
-  if (typeof title != "string") {
-    return res.status(400).json({
-      message: "Title must be a string",
-    });
-  }
-
-  if (title === "" || title === " ") {
-    return res.status(400).json({
-      message: "The title cannot be an empty space",
-    });
-  }
-
-  if (title.trim().length > 100) {
-    return res.status(400).json({
-      message: "The title's length can't be more than 100 characters",
-    });
-  }
-  //----------------------------------------------------------------------
-
-  //----------------------------------------------------------------DESCRIPTION
-  if (typeof description !== "string") {
-    return res.status(400).json({
-      message: "Description must be a string",
-    });
-  }
-
-  if (description === "" || description === " ") {
-    return res.status(400).json({
-      message: "The description cannot be an empty space",
-    });
-  }
-
-  if (description.trim().length > 100) {
-    return res.status(400).json({
-      message: "The description's length cannot be more than 100 characters",
-    });
-  }
-  //---------------------------------------------------------------------------
-  //------------------------------------------------------------------ISCOMPLETE
-  let { isComplete } = req.body;
-
-  if (isComplete) {
-    if (typeof isComplete != Boolean) {
+    if (!title || !description) {
       return res.status(400).json({
-        message: "The isComplete property must be a Boolean",
+        message: "The title and description are necessary",
       });
     }
-  }
 
-  try {
-    const task = await Task.create();
+    //---------------------------------------------------------------TITLE
+    const existingTitle = await Task.findOne({
+      where: { title },
+    });
+    if (existingTitle) {
+      return res.status(400).json({
+        message: "There is already a task with that name, it must be unique",
+      });
+    }
+
+    if (typeof title != "string") {
+      return res.status(400).json({
+        message: "Title must be a string",
+      });
+    }
+
+    if (title === "" || title === " ") {
+      return res.status(400).json({
+        message: "The title cannot be an empty space",
+      });
+    }
+
+    if (title.trim().length > 100) {
+      return res.status(400).json({
+        message: "The title's length can't be more than 100 characters",
+      });
+    }
+    //----------------------------------------------------------------------
+
+    //----------------------------------------------------------------DESCRIPTION
+    if (typeof description !== "string") {
+      return res.status(400).json({
+        message: "Description must be a string",
+      });
+    }
+
+    if (description === "" || description === " ") {
+      return res.status(400).json({
+        message: "The description cannot be an empty space",
+      });
+    }
+
+    if (description.trim().length > 100) {
+      return res.status(400).json({
+        message: "The description's length cannot be more than 100 characters",
+      });
+    }
+    //---------------------------------------------------------------------------
+    //------------------------------------------------------------------ISCOMPLETE
+
+    if (isComplete) {
+      if (typeof isComplete != "boolean") {
+        return res.status(400).json({
+          message: "The isComplete property must be a Boolean",
+        });
+      }
+    }
+
+    const task = await Task.create({
+      title,
+      description,
+      isComplete,
+    });
     return res.status(201).json({
       message: task,
     });
   } catch (err) {
+    console.log(err);
     console.error("An error has happened while creating a task", err);
   }
 };
@@ -98,18 +103,16 @@ export const getAllTasks = async (req, res) => {
   }
 };
 
-export const getOneTask = async (req, res) => {
+export const getTask = async (req, res) => {
   const { id } = req.params;
   try {
-    const task = await Task.findByPk({
-      where: id,
-    });
+    const task = await Task.findByPk(id);
     if (task) {
       return res.status(200).json({
         message: task,
       });
     } else {
-      return res.stauts(400).json({
+      return res.status(400).json({
         message: "There are no task with that id",
       });
     }
@@ -119,75 +122,88 @@ export const getOneTask = async (req, res) => {
 };
 
 export const updateTask = async (req, res) => {
-  const { title, description } = req.body;
-  const { id } = req.params;
+  try {
+    const { title, description } = req.body;
+    const { id } = req.params;
 
-  //---------------------------------------------------------------TITLE
-  const existingTitle = await Task.findOne({
-    where: title.trim(),
-  });
-  if (existingTitle) {
-    return res.status(400).json({
-      message: "There is already a task with that name, it must be unique",
+    //---------------------------------------------------------------TITLE
+    const existingTitle = await Task.findOne({
+      where: {
+        title,
+      },
     });
-  }
-
-  if (typeof title != "string") {
-    return res.status(400).json({
-      message: "Title must be a string",
-    });
-  }
-
-  if (title === "" || title === " ") {
-    return res.status(400).json({
-      message: "The title cannot be an empty space",
-    });
-  }
-
-  if (title.trim().length > 100) {
-    return res.status(400).json({
-      message: "The title's length can't be more than 100 characters",
-    });
-  }
-  //----------------------------------------------------------------------
-
-  //----------------------------------------------------------------DESCRIPTION
-  if (typeof description !== "string") {
-    return res.status(400).json({
-      message: "Description must be a string",
-    });
-  }
-
-  if (description === "" || description === " ") {
-    return res.status(400).json({
-      message: "The description cannot be an empty space",
-    });
-  }
-
-  if (description.trim().length > 100) {
-    return res.status(400).json({
-      message: "The description's length cannot be more than 100 characters",
-    });
-  }
-  //---------------------------------------------------------------------------
-  //------------------------------------------------------------------ISCOMPLETE
-  let { isComplete } = req.body;
-
-  if (isComplete) {
-    if (typeof isComplete != Boolean) {
+    if (existingTitle) {
       return res.status(400).json({
-        message: "The isComplete property must be a Boolean",
+        message: "There is already a task with that name, it must be unique",
       });
     }
-  }
 
-  try {
-    const task = await Task.update({
-      where: id,
-    });
-    return res.status(201).json({
-      message: task,
-    });
+    if (typeof title != "string") {
+      return res.status(400).json({
+        message: "Title must be a string",
+      });
+    }
+
+    if (title === "" || title === " ") {
+      return res.status(400).json({
+        message: "The title cannot be an empty space",
+      });
+    }
+
+    if (title.trim().length > 100) {
+      return res.status(400).json({
+        message: "The title's length can't be more than 100 characters",
+      });
+    }
+    //----------------------------------------------------------------------
+
+    //----------------------------------------------------------------DESCRIPTION
+    if (typeof description !== "string") {
+      return res.status(400).json({
+        message: "Description must be a string",
+      });
+    }
+
+    if (description === "" || description === " ") {
+      return res.status(400).json({
+        message: "The description cannot be an empty space",
+      });
+    }
+
+    if (description.trim().length > 100) {
+      return res.status(400).json({
+        message: "The description's length cannot be more than 100 characters",
+      });
+    }
+    //---------------------------------------------------------------------------
+    //------------------------------------------------------------------ISCOMPLETE
+    let { isComplete } = req.body;
+
+    if (isComplete) {
+      if (typeof isComplete != "boolean") {
+        return res.status(400).json({
+          message: "The isComplete property must be a Boolean",
+        });
+      }
+    }
+
+    const task = await Task.update(
+      { title, description, isComplete },
+      {
+        where: {
+          id,
+        },
+      }
+    );
+    if (task.length > 0) {
+      return res.status(201).json({
+        message: "Task updated",
+      });
+    } else {
+      return res.status(400).json({
+        message: "There is no task with that id",
+      });
+    }
   } catch (err) {
     console.error("An error has happened while updating a task", err);
   }
@@ -197,7 +213,9 @@ export const deleteTask = async (req, res) => {
   const { id } = req.params;
   try {
     const task = await Task.destroy({
-      where: id,
+      where: {
+        id,
+      },
     });
     if (task) {
       return res.status(200).json({
