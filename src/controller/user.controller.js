@@ -1,4 +1,4 @@
-import { use } from "react";
+import { where } from "sequelize";
 import { User } from "../models/users.model.js";
 
 /*
@@ -39,7 +39,9 @@ export const createUser = async (req, res) => {
 
   //----------------------------------------------------------------EMAIL
   const existingEmail = await User.findOne({
-    where: email.trim(),
+    where: {
+      email,
+    },
   });
   if (existingEmail) {
     return res.status(400).json({
@@ -87,7 +89,11 @@ export const createUser = async (req, res) => {
   //----------------------------------------------------------------------------
 
   try {
-    const user = await User.create();
+    const user = await User.create({
+      name,
+      email,
+      password,
+    });
     return res.status(201).json({
       message: user,
     });
@@ -109,18 +115,16 @@ export const getAllUsers = async (req, res) => {
   }
 };
 
-export const getOneUser = async (req, res) => {
+export const getUser = async (req, res) => {
   const { id } = req.params;
   try {
-    const user = await User.findByPk({
-      where: id,
-    });
+    const user = await User.findByPk(id);
     if (user) {
       return res.status(200).json({
         message: user,
       });
     } else {
-      return res.stauts(400).json({
+      return res.status(400).json({
         message: "There are no users with that id",
       });
     }
@@ -130,84 +134,89 @@ export const getOneUser = async (req, res) => {
 };
 
 export const updateUser = async (req, res) => {
-  const { name, email, password } = req.body;
-  const { id } = req.params;
-
-  //---------------------------------------------------------------NAME
-
-  if (typeof name != "string") {
-    return res.status(400).json({
-      message: "Title must be a string",
-    });
-  }
-
-  if (name === "" || name === " ") {
-    return res.status(400).json({
-      message: "The name cannot be an empty space",
-    });
-  }
-
-  if (name.trim().length > 100) {
-    return res.status(400).json({
-      message: "The name's length can't be more than 100 characters",
-    });
-  }
-  //----------------------------------------------------------------------
-
-  //----------------------------------------------------------------EMAIL
-  const existingEmail = await User.findOne({
-    where: email.trim(),
-  });
-  if (existingEmail) {
-    return res.status(400).json({
-      message: "There is already a user with that email, it must be unique",
-    });
-  }
-
-  if (typeof email !== "string") {
-    return res.status(400).json({
-      message: "The email must be a string",
-    });
-  }
-
-  if (email === "" || email === " ") {
-    return res.status(400).json({
-      message: "The description cannot be an empty space",
-    });
-  }
-
-  if (email.trim().length > 100) {
-    return res.status(400).json({
-      message: "The email's length cannot be more than 100 characters",
-    });
-  }
-  //---------------------------------------------------------------------------
-  //------------------------------------------------------------------PASSWORD
-
-  if (typeof password !== "string") {
-    return res.status({
-      message: "The password must be a string",
-    });
-  }
-
-  if (password == "" || password == " ") {
-    return res.status(400).json({
-      message: "The password cannot be an empty space",
-    });
-  }
-
-  if (password.length > 100) {
-    return res.status(400).json({
-      message: "The password's length cannot be more than 100 characters",
-    });
-  }
-
   try {
-    const user = await User.update({
-      where: id,
+    const { name, email, password } = req.body;
+    const { id } = req.params;
+
+    //---------------------------------------------------------------NAME
+
+    if (typeof name != "string") {
+      return res.status(400).json({
+        message: "Title must be a string",
+      });
+    }
+
+    if (name === "" || name === " ") {
+      return res.status(400).json({
+        message: "The name cannot be an empty space",
+      });
+    }
+
+    if (name.trim().length > 100) {
+      return res.status(400).json({
+        message: "The name's length can't be more than 100 characters",
+      });
+    }
+    //----------------------------------------------------------------------
+
+    //----------------------------------------------------------------EMAIL
+    const existingEmail = await User.findOne({
+      where: { email },
     });
+    if (existingEmail) {
+      return res.status(400).json({
+        message: "There is already a user with that email, it must be unique",
+      });
+    }
+
+    if (typeof email !== "string") {
+      return res.status(400).json({
+        message: "The email must be a string",
+      });
+    }
+
+    if (email === "" || email === " ") {
+      return res.status(400).json({
+        message: "The description cannot be an empty space",
+      });
+    }
+
+    if (email.trim().length > 100) {
+      return res.status(400).json({
+        message: "The email's length cannot be more than 100 characters",
+      });
+    }
+    //---------------------------------------------------------------------------
+    //------------------------------------------------------------------PASSWORD
+
+    if (typeof password !== "string") {
+      return res.status({
+        message: "The password must be a string",
+      });
+    }
+
+    if (password == "" || password == " ") {
+      return res.status(400).json({
+        message: "The password cannot be an empty space",
+      });
+    }
+
+    if (password.length > 100) {
+      return res.status(400).json({
+        message: "The password's length cannot be more than 100 characters",
+      });
+    }
+
+    const user = await User.update(
+      { name, email, password },
+      {
+        where: {
+          id,
+        },
+      }
+    );
     return res.status(201).json({
-      message: user,
+      message: "The user has been updated",
     });
   } catch (err) {
     console.error("An error has happened while updating a user", err);
@@ -218,7 +227,9 @@ export const deleteUser = async (req, res) => {
   const { id } = req.params;
   try {
     const user = await User.destroy({
-      where: id,
+      where: {
+        id,
+      },
     });
     if (user) {
       return res.status(200).json({
