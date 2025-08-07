@@ -9,10 +9,10 @@ import {
 
 const userRouter = Router();
 
-taskRouter.post("/api/users", createUser);
-taskRouter.get("/api/users", getAllUsers);
-taskRouter.get("/api/users/:id", getUser);
-taskRouter.put("/api/users/:id", updateUser);
-taskRouter.delete("/api/users/:id", deleteUser);
+userRouter.post("/api/users", createUser);
+userRouter.get("/api/users", getAllUsers);
+userRouter.get("/api/users/:id", getUser);
+userRouter.put("/api/users/:id", updateUser);
+userRouter.delete("/api/users/:id", deleteUser);
 
 export default userRouter;
