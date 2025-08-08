@@ -1,5 +1,3 @@
-<<<<<<< HEAD
-=======
 import { Task } from "../models/tasks.model.js";
 
 /*Validación de Datos:
@@ -231,4 +229,3 @@ export const deleteTask = async (req, res) => {
     console.error("An error has happened while deleting a task", err);
   }
 };
->>>>>>> develop
