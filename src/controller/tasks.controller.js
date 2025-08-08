@@ -1,4 +1,3 @@
-import { where } from "sequelize";
 import { Task } from "../models/tasks.model.js";
 
 /*Validación de Datos:
