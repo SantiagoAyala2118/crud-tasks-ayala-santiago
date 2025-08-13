@@ -1,4 +1,6 @@
 import { Task } from "../models/tasks.model.js";
+import { Op } from "sequelize";
+import { User } from "../models/users.model.js";
 
 /*Validación de Datos:
 ● Validar los datos recibidos antes de añadir o editar una nueva tarea:
@@ -9,11 +11,11 @@ import { Task } from "../models/tasks.model.js";
 */
 export const createTask = async (req, res) => {
   try {
-    const { title, description, is_complete } = req.body;
+    const { title, description, is_complete, user_id } = req.body;
 
-    if (!title || !description) {
+    if (!title || !description || !user_id) {
       return res.status(400).json({
-        message: "The title and description are necessary",
+        message: "The title, description and user_id are necessary",
       });
     }
 
@@ -75,14 +77,33 @@ export const createTask = async (req, res) => {
       }
     }
 
-    const task = await Task.create({
-      title,
-      description,
-      is_complete,
-    });
-    return res.status(201).json({
-      message: task,
-    });
+    //-----------------------------------------------------------------USER_ID
+
+    if (typeof user_id !== 'number' || user_id < 0) {
+      return res.status(400).json({
+        message: 'The user_id must be a positive number'
+      })
+    }
+
+    const idUserExisting = await idUserExisting.findByPk({
+      where: { id }
+    })
+    if (idUserExisting) {
+      const task = await Task.create({
+        title,
+        description,
+        is_complete,
+        user_id
+      });
+      return res.status(201).json({
+        message: task,
+      });
+    } else {
+      return res.status(404).json({
+        message: 'That user_id does not exist in the database'
+      })
+    }
+
   } catch (err) {
     console.log(err);
     console.error("An error has happened while creating a task", err);
@@ -91,11 +112,29 @@ export const createTask = async (req, res) => {
 
 export const getAllTasks = async (req, res) => {
   try {
-    const task = await Task.findAll();
+    const task = await Task.findAll({
+      attributes: {
+        exclude: ['user_id']
+      },
+      include: [
+        {
+          model: User,
+          attributes: {
+            exclude: ['password']
+          }
+        }
+      ]
+    });
     if (task) {
       return res.status(200).json({
-        message: task,
-      });
+        message: task
+      })
+
+
+
+
+
+
     }
   } catch (err) {
     console.error("An error has happened while geting the tasks", err);
@@ -103,9 +142,19 @@ export const getAllTasks = async (req, res) => {
 };
 
 export const getTask = async (req, res) => {
-  const { id } = req.params;
   try {
-    const task = await Task.findByPk(id);
+    const { id } = req.params;
+    const task = await Task.findByPk(id, {
+      attributes: {
+        exclude: ['user_id']
+      },
+      include: [{
+        model: User,
+        attributes: {
+          exclude: ['password']
+        }
+      }]
+    });
     if (task) {
       return res.status(200).json({
         message: task,
