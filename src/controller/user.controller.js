@@ -1,3 +1,4 @@
+import { Task } from "../models/tasks.model.js";
 import { User } from "../models/users.model.js";
 
 /*
@@ -103,7 +104,17 @@ export const createUser = async (req, res) => {
 
 export const getAllUsers = async (req, res) => {
   try {
-    const user = await User.findAll();
+    const user = await User.findAll({
+      attributes: {
+        exclude: ['password']
+      },
+      include: {
+        model: Task,
+        attributes: {
+          exclude: ['user_id']
+        }
+      }
+    });
     if (user) {
       return res.status(200).json({
         message: user,
@@ -117,7 +128,17 @@ export const getAllUsers = async (req, res) => {
 export const getUser = async (req, res) => {
   const { id } = req.params;
   try {
-    const user = await User.findByPk(id);
+    const user = await User.findByPk(id, {
+      attributes: {
+        esxclude: ['password']
+      },
+      include: {
+        model: Task,
+        attributes: {
+          exclude: ['user_id']
+        }
+      }
+    });
     if (user) {
       return res.status(200).json({
         message: user,
