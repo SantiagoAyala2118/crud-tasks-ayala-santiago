@@ -9,7 +9,7 @@ import { Task } from "../models/tasks.model.js";
 */
 export const createTask = async (req, res) => {
   try {
-    const { title, description, isComplete } = req.body;
+    const { title, description, is_complete } = req.body;
 
     if (!title || !description) {
       return res.status(400).json({
@@ -67,10 +67,10 @@ export const createTask = async (req, res) => {
     //---------------------------------------------------------------------------
     //------------------------------------------------------------------ISCOMPLETE
 
-    if (isComplete) {
-      if (typeof isComplete != "boolean") {
+    if (is_complete) {
+      if (typeof is_complete != "boolean") {
         return res.status(400).json({
-          message: "The isComplete property must be a Boolean",
+          message: "The is_complete property must be a Boolean",
         });
       }
     }
@@ -78,7 +78,7 @@ export const createTask = async (req, res) => {
     const task = await Task.create({
       title,
       description,
-      isComplete,
+      is_complete,
     });
     return res.status(201).json({
       message: task,
@@ -176,18 +176,18 @@ export const updateTask = async (req, res) => {
     }
     //---------------------------------------------------------------------------
     //------------------------------------------------------------------ISCOMPLETE
-    let { isComplete } = req.body;
+    let { is_complete } = req.body;
 
-    if (isComplete) {
-      if (typeof isComplete != "boolean") {
+    if (is_complete) {
+      if (typeof is_complete != "boolean") {
         return res.status(400).json({
-          message: "The isComplete property must be a Boolean",
+          message: "The is_complete property must be a Boolean",
         });
       }
     }
 
     const task = await Task.update(
-      { title, description, isComplete },
+      { title, description, is_complete },
       {
         where: {
           id,
