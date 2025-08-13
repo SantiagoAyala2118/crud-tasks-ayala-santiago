@@ -12,7 +12,7 @@ export const Task = sequelize.define(
       unique: true,
       allowNull: false,
     },
-    is_completed: {
+    is_complete: {
       type: DataTypes.BOOLEAN,
       defaultValue: false,
     },
