@@ -79,31 +79,28 @@ export const createTask = async (req, res) => {
 
     //-----------------------------------------------------------------USER_ID
 
-    if (typeof user_id !== 'number' || user_id < 0) {
+    if (typeof user_id !== "number" || user_id < 0) {
       return res.status(400).json({
-        message: 'The user_id must be a positive number'
-      })
+        message: "The user_id must be a positive number",
+      });
     }
 
-    // const idUserExisting = await Task.findOne({
-    //   where: { id }
-    // })
-    // if (idUserExisting) {
+    const idUserExisting = await User.findByPk(user_id);
+    if (idUserExisting) {
       const task = await Task.create({
         title,
         description,
         is_complete,
-        user_id
+        user_id,
       });
       return res.status(201).json({
         message: task,
       });
-    // } else {
-    //   return res.status(404).json({
-    //     message: 'That user_id does not exist in the database'
-    //   })
-    // }
-
+    } else {
+      return res.status(404).json({
+        message: "That user_id does not exist in the database",
+      });
+    }
   } catch (err) {
     console.log(err);
     console.error("An error has happened while creating a task", err);
@@ -114,27 +111,22 @@ export const getAllTasks = async (req, res) => {
   try {
     const task = await Task.findAll({
       attributes: {
-        exclude: ['user_id']
+        exclude: ["user_id"],
       },
       include: [
         {
           model: User,
+          as: "Author",
           attributes: {
-            exclude: ['password']
-          }
-        }
-      ]
+            exclude: ["password"],
+          },
+        },
+      ],
     });
     if (task) {
       return res.status(200).json({
-        message: task
-      })
-
-
-
-
-
-
+        message: task,
+      });
     }
   } catch (err) {
     console.error("An error has happened while geting the tasks", err);
@@ -146,14 +138,16 @@ export const getTask = async (req, res) => {
     const { id } = req.params;
     const task = await Task.findByPk(id, {
       attributes: {
-        exclude: ['user_id']
+        exclude: ["user_id"],
       },
-      include: [{
-        model: User,
-        attributes: {
-          exclude: ['password']
-        }
-      }]
+      include: [
+        {
+          model: User,
+          attributes: {
+            exclude: ["password"],
+          },
+        },
+      ],
     });
     if (task) {
       return res.status(200).json({
