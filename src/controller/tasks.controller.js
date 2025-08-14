@@ -85,10 +85,10 @@ export const createTask = async (req, res) => {
       })
     }
 
-    const idUserExisting = await idUserExisting.findByPk({
-      where: { id }
-    })
-    if (idUserExisting) {
+    // const idUserExisting = await Task.findOne({
+    //   where: { id }
+    // })
+    // if (idUserExisting) {
       const task = await Task.create({
         title,
         description,
@@ -98,11 +98,11 @@ export const createTask = async (req, res) => {
       return res.status(201).json({
         message: task,
       });
-    } else {
-      return res.status(404).json({
-        message: 'That user_id does not exist in the database'
-      })
-    }
+    // } else {
+    //   return res.status(404).json({
+    //     message: 'That user_id does not exist in the database'
+    //   })
+    // }
 
   } catch (err) {
     console.log(err);
