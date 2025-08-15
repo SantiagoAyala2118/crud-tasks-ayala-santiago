@@ -25,7 +25,7 @@ export const User_Project = sequelize.define(
     timestamps: false,
   }
 );
-
+//Relaciones de otras tablas HACIA la tabla intermedia
 User.belongsToMany(Project, {
   through: User_Project,
   foreignKey: "user_id",
@@ -35,4 +35,15 @@ Project.belongsToMany(User, {
   through: User_Project,
   foreignKey: "project_id",
   targetKey: "id",
+});
+
+//Relaciondes DESDE la tabla intermedia a otras tablas
+User_Project.belongsTo(User, {
+  foreignKey: 'user_id',
+  as: 'User'
+});
+
+User_Project.belongsTo(Project, {
+  foreignKey: 'project_id',
+  as: 'Project'
 });
