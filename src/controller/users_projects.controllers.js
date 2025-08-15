@@ -49,3 +49,38 @@ export const createUserProject = async (req, res) => {
         console.error('An error has occurred while creating an user project', err)
     };
 };
+
+
+export const getAllUsersProjects = async (req, res) => {
+    try {
+        const userProjects = await User_Project.findAll({
+            attributes: {
+                exclude: ['user_id', 'project_id']
+            },
+            include: [{
+                model: User,
+                as: 'User',
+                attributes: {
+                    exclude: ['password','id']
+                }
+            },
+            {
+                model: Project,
+                as: 'Project',
+                attributes: {
+                    exclude:['id']
+                }
+            }
+            ]
+        })
+
+        if (userProjects.length > 0) {
+            return res.status(200).json({
+                userProjects
+            });
+        }
+
+    } catch (err) {
+        console.error('An error has occurred while trying to get all the user projects', err)
+    };
+};
