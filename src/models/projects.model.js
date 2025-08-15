@@ -8,7 +8,7 @@ export const Project = sequelize.define(
       type: DataTypes.STRING(100),
       allowNull: false,
     },
-    descrption: {
+    description: {
       type: DataTypes.STRING(100),
       allowNull: false,
     },
