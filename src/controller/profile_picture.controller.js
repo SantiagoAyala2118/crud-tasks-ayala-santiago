@@ -4,6 +4,30 @@ import { User } from "../models/users.model.js";
 export const createProfilePicture = async (req, res) => {
   try {
     const { url, description, user_id } = req.body;
+
+    if (!url || !user_id) {
+      return res.status(400).json({
+        message: 'The url and the user_id are neccessary'
+      });
+    };
+
+    if (typeof user_id !== 'number') {
+      return res.status(400).json({
+        message: 'The user_id must be a number'
+      });
+    };
+
+    const userExisting = await User.findByPk(user_id)
+
+    if (!userExisting) {
+      return res.status(404).json({
+        message: 'There is no user with that user_id in the database'
+      });
+    };
+
+
+
+
     const profilePicture = await ProfilePicture.create({
       url,
       description,
