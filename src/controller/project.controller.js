@@ -29,7 +29,8 @@ export const createProject = async (req, res) => {
         });
         if (project) {
             return res.status(201).json({
-                messsage: project
+                messsage:'Project created',
+                project
             })
         }
 
@@ -45,7 +46,8 @@ export const getAllProjects = async (req, res) => {
 
         if (projects.length > 0) {
             return res.status(200).json({
-                message: projects
+                message:'Here are the projects',
+                projects
             });
         } else {
             return res.status(404).json({

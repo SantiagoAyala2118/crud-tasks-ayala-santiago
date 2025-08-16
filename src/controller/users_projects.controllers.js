@@ -41,6 +41,7 @@ export const createUserProject = async (req, res) => {
 
         if (userProject) {
             return res.status(201).json({
+                message:'The register has been created',
                 userProject
             });
         };
@@ -76,6 +77,7 @@ export const getAllUsersProjects = async (req, res) => {
 
         if (userProjects.length > 0) {
             return res.status(200).json({
+                message:'Here are the registers', 
                 userProjects
             });
         }

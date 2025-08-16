@@ -1,14 +1,6 @@
 import { Task } from "../models/tasks.model.js";
 import { Op } from "sequelize";
 import { User } from "../models/users.model.js";
-
-/*Validación de Datos:
-● Validar los datos recibidos antes de añadir o editar una nueva tarea:
-○ title: Debe ser un cadena única en la base de datos no vacía y de un máximo de
-100 caracteres.
-○ description: Debe ser una cadena no vacía y de un máximo de 100 caracteres.
-○ isComplete: Debe ser un valor booleano.
-*/
 export const createTask = async (req, res) => {
   try {
     const { title, description, is_complete, user_id } = req.body;
@@ -94,7 +86,8 @@ export const createTask = async (req, res) => {
         user_id,
       });
       return res.status(201).json({
-        message: task,
+        message: 'Task created',
+        task,
       });
     } else {
       return res.status(404).json({
@@ -125,7 +118,8 @@ export const getAllTasks = async (req, res) => {
     });
     if (task) {
       return res.status(200).json({
-        message: task,
+        message:'All tasks and users founded',
+        task,
       });
     }
   } catch (err) {
@@ -143,6 +137,7 @@ export const getTask = async (req, res) => {
       include: [
         {
           model: User,
+          as:'Author',
           attributes: {
             exclude: ["password"],
           },
@@ -151,7 +146,8 @@ export const getTask = async (req, res) => {
     });
     if (task) {
       return res.status(200).json({
-        message: task,
+        message: 'Task founded', 
+        task,
       });
     } else {
       return res.status(400).json({

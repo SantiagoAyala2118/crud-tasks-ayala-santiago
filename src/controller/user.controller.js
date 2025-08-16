@@ -1,12 +1,6 @@
 import { Task } from "../models/tasks.model.js";
 import { User } from "../models/users.model.js";
 
-/*
-○ name: Debe ser una cadena no vacía y de un máximo de 100 caracteres.
-○ email: Debe ser un cadena única en la base de datos no vacía y de un máximo de
-100 caracteres.
-○ password: Debe ser una cadena no vacía y de un máximo de 100 caracteres.
-*/
 export const createUser = async (req, res) => {
   try {
     const { name, email, password } = req.body;
