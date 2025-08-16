@@ -10,7 +10,7 @@ export const initDB = async () => {
     await sequelize.authenticate();
     console.log("Se logró autenticar con la base de datos");
     await sequelize.sync({
-      force: true,
+      force: false,
     });
   } catch (err) {
     console.error(
