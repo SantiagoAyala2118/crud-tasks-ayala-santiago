@@ -1,19 +1,13 @@
 import { Task } from "../models/tasks.model.js";
-
-/*Validación de Datos:
-● Validar los datos recibidos antes de añadir o editar una nueva tarea:
-○ title: Debe ser un cadena única en la base de datos no vacía y de un máximo de
-100 caracteres.
-○ description: Debe ser una cadena no vacía y de un máximo de 100 caracteres.
-○ isComplete: Debe ser un valor booleano.
-*/
+import { Op } from "sequelize";
+import { User } from "../models/users.model.js";
 export const createTask = async (req, res) => {
   try {
-    const { title, description, isComplete } = req.body;
+    const { title, description, is_complete, user_id } = req.body;
 
-    if (!title || !description) {
+    if (!title || !description || !user_id) {
       return res.status(400).json({
-        message: "The title and description are necessary",
+        message: "The title, description and user_id are necessary",
       });
     }
 
@@ -67,22 +61,39 @@ export const createTask = async (req, res) => {
     //---------------------------------------------------------------------------
     //------------------------------------------------------------------ISCOMPLETE
 
-    if (isComplete) {
-      if (typeof isComplete != "boolean") {
+    if (is_complete) {
+      if (typeof is_complete != "boolean") {
         return res.status(400).json({
-          message: "The isComplete property must be a Boolean",
+          message: "The is_complete property must be a Boolean",
         });
       }
     }
 
-    const task = await Task.create({
-      title,
-      description,
-      isComplete,
-    });
-    return res.status(201).json({
-      message: task,
-    });
+    //-----------------------------------------------------------------USER_ID
+
+    if (typeof user_id !== "number" || user_id < 0) {
+      return res.status(400).json({
+        message: "The user_id must be a positive number",
+      });
+    }
+
+    const idUserExisting = await User.findByPk(user_id);
+    if (idUserExisting) {
+      const task = await Task.create({
+        title,
+        description,
+        is_complete,
+        user_id,
+      });
+      return res.status(201).json({
+        message: 'Task created',
+        task,
+      });
+    } else {
+      return res.status(404).json({
+        message: "That user_id does not exist in the database",
+      });
+    }
   } catch (err) {
     console.log(err);
     console.error("An error has happened while creating a task", err);
@@ -91,10 +102,24 @@ export const createTask = async (req, res) => {
 
 export const getAllTasks = async (req, res) => {
   try {
-    const task = await Task.findAll();
+    const task = await Task.findAll({
+      attributes: {
+        exclude: ["user_id"],
+      },
+      include: [
+        {
+          model: User,
+          as: "Author",
+          attributes: {
+            exclude: ["password"],
+          },
+        },
+      ],
+    });
     if (task) {
       return res.status(200).json({
-        message: task,
+        message:'All tasks and users founded',
+        task,
       });
     }
   } catch (err) {
@@ -103,12 +128,26 @@ export const getAllTasks = async (req, res) => {
 };
 
 export const getTask = async (req, res) => {
-  const { id } = req.params;
   try {
-    const task = await Task.findByPk(id);
+    const { id } = req.params;
+    const task = await Task.findByPk(id, {
+      attributes: {
+        exclude: ["user_id"],
+      },
+      include: [
+        {
+          model: User,
+          as:'Author',
+          attributes: {
+            exclude: ["password"],
+          },
+        },
+      ],
+    });
     if (task) {
       return res.status(200).json({
-        message: task,
+        message: 'Task founded', 
+        task,
       });
     } else {
       return res.status(400).json({
@@ -176,18 +215,18 @@ export const updateTask = async (req, res) => {
     }
     //---------------------------------------------------------------------------
     //------------------------------------------------------------------ISCOMPLETE
-    let { isComplete } = req.body;
+    let { is_complete } = req.body;
 
-    if (isComplete) {
-      if (typeof isComplete != "boolean") {
+    if (is_complete) {
+      if (typeof is_complete != "boolean") {
         return res.status(400).json({
-          message: "The isComplete property must be a Boolean",
+          message: "The is_complete property must be a Boolean",
         });
       }
     }
 
     const task = await Task.update(
-      { title, description, isComplete },
+      { title, description, is_complete },
       {
         where: {
           id,
