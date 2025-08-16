@@ -35,7 +35,8 @@ export const createProfilePicture = async (req, res) => {
     });
     if (profilePicture) {
       return res.status(201).json({
-        message: profilePicture,
+        message:'Profile picture created',
+        profilePicture,
       });
     }
   } catch (err) {
@@ -53,6 +54,7 @@ export const getAllProfilePictures = async (req, res) => {
     },
     include: {
       model: User,
+      as:'User',
       attributes: {
         exclude: ["password"],
       },
@@ -60,7 +62,8 @@ export const getAllProfilePictures = async (req, res) => {
   });
   if (profilePicture) {
     return res.status(200).json({
-      message: profilePicture,
+      message:'Here are the profile pictures',
+      profilePicture,
     });
   }
 };
