@@ -27,23 +27,23 @@ export const UserProject = sequelize.define(
 );
 //Relaciones de otras tablas HACIA la tabla intermedia
 User.belongsToMany(Project, {
-  through: User_Project,
+  through: UserProject,
   foreignKey: "user_id",
   sourceKey: "id",
 });
 Project.belongsToMany(User, {
-  through: User_Project,
+  through: UserProject,
   foreignKey: "project_id",
   targetKey: "id",
 });
 
 //Relaciondes DESDE la tabla intermedia a otras tablas
-User_Project.belongsTo(User, {
+UserProject.belongsTo(User, {
   foreignKey: "user_id",
   as: "User",
 });
 
-User_Project.belongsTo(Project, {
+UserProject.belongsTo(Project, {
   foreignKey: "project_id",
   as: "Project",
 });
