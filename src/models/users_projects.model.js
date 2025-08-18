@@ -3,7 +3,7 @@ import { DataTypes } from "sequelize";
 import { User } from "./users.model.js";
 import { Project } from "./projects.model.js";
 
-export const User_Project = sequelize.define(
+export const UserProject = sequelize.define(
   "User_Project",
   {
     id: {
@@ -39,11 +39,11 @@ Project.belongsToMany(User, {
 
 //Relaciondes DESDE la tabla intermedia a otras tablas
 User_Project.belongsTo(User, {
-  foreignKey: 'user_id',
-  as: 'User'
+  foreignKey: "user_id",
+  as: "User",
 });
 
 User_Project.belongsTo(Project, {
-  foreignKey: 'project_id',
-  as: 'Project'
+  foreignKey: "project_id",
+  as: "Project",
 });

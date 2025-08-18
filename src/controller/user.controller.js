@@ -1,6 +1,7 @@
 import { Task } from "../models/tasks.model.js";
 import { User } from "../models/users.model.js";
 
+//-----------Create an user
 export const createUser = async (req, res) => {
   try {
     const { name, email, password } = req.body;
@@ -98,6 +99,7 @@ export const createUser = async (req, res) => {
   }
 };
 
+//----------Get all the users
 export const getAllUsers = async (req, res) => {
   try {
     const user = await User.findAll({
@@ -121,6 +123,7 @@ export const getAllUsers = async (req, res) => {
   }
 };
 
+//----------Get one user
 export const getUser = async (req, res) => {
   const { id } = req.params;
   try {
@@ -149,6 +152,7 @@ export const getUser = async (req, res) => {
   }
 };
 
+//----------Update an user
 export const updateUser = async (req, res) => {
   try {
     const { name, email, password } = req.body;
@@ -239,6 +243,7 @@ export const updateUser = async (req, res) => {
   }
 };
 
+//----------Delete an user
 export const deleteUser = async (req, res) => {
   const { id } = req.params;
   try {

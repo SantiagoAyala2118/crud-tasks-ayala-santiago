@@ -1,32 +1,30 @@
 import { ProfilePicture } from "../models/profile_picture.model.js";
 import { User } from "../models/users.model.js";
 
+//----------Create a profile picture
 export const createProfilePicture = async (req, res) => {
   try {
     const { url, description, user_id } = req.body;
 
     if (!url || !user_id) {
       return res.status(400).json({
-        message: 'The url and the user_id are neccessary'
+        message: "The url and the user_id are neccessary",
       });
-    };
+    }
 
-    if (typeof user_id !== 'number') {
+    if (typeof user_id !== "number") {
       return res.status(400).json({
-        message: 'The user_id must be a number'
+        message: "The user_id must be a number",
       });
-    };
+    }
 
-    const userExisting = await User.findByPk(user_id)
+    const userExisting = await User.findByPk(user_id);
 
     if (!userExisting) {
       return res.status(404).json({
-        message: 'There is no user with that user_id in the database'
+        message: "There is no user with that user_id in the database",
       });
-    };
-
-
-
+    }
 
     const profilePicture = await ProfilePicture.create({
       url,
@@ -35,7 +33,7 @@ export const createProfilePicture = async (req, res) => {
     });
     if (profilePicture) {
       return res.status(201).json({
-        message:'Profile picture created',
+        message: "Profile picture created",
         profilePicture,
       });
     }
@@ -47,6 +45,7 @@ export const createProfilePicture = async (req, res) => {
   }
 };
 
+//----------Get all the ptofile pictures
 export const getAllProfilePictures = async (req, res) => {
   const profilePicture = await ProfilePicture.findAll({
     attributes: {
@@ -54,7 +53,7 @@ export const getAllProfilePictures = async (req, res) => {
     },
     include: {
       model: User,
-      as:'User',
+      as: "User",
       attributes: {
         exclude: ["password"],
       },
@@ -62,7 +61,7 @@ export const getAllProfilePictures = async (req, res) => {
   });
   if (profilePicture) {
     return res.status(200).json({
-      message:'Here are the profile pictures',
+      message: "Here are the profile pictures",
       profilePicture,
     });
   }

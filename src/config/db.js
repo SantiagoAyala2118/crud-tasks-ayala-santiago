@@ -3,7 +3,7 @@ import { User } from "../models/users.model.js";
 import { Task } from "../models/tasks.model.js";
 import { ProfilePicture } from "../models/profile_picture.model.js";
 import { Project } from "../models/projects.model.js";
-import { User_Project } from "../models/users_projects.model.js";
+import { UserProject } from "../models/users_projects.model.js";
 
 export const initDB = async () => {
   try {
@@ -22,5 +22,5 @@ export const initDB = async () => {
     User.sync(),
     ProfilePicture.sync(),
     Project.sync(),
-    User_Project.sync();
+    UserProject.sync();
 };

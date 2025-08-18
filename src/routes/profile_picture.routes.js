@@ -4,9 +4,9 @@ import {
   getAllProfilePictures,
 } from "../controller/profile_picture.controller.js";
 
-const ProfilePictureRouter = Router();
+const profilePictureRouter = Router();
 
-ProfilePictureRouter.post("/api/profile_picture", createProfilePicture);
-ProfilePictureRouter.get("/api/profile_picture", getAllProfilePictures);
+profilePictureRouter.post("/api/profile_picture", createProfilePicture);
+profilePictureRouter.get("/api/profile_picture", getAllProfilePictures);
 
-export default ProfilePictureRouter;
+export default profilePictureRouter;
