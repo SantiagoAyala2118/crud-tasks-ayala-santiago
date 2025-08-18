@@ -1,6 +1,8 @@
 import { Task } from "../models/tasks.model.js";
 import { Op } from "sequelize";
 import { User } from "../models/users.model.js";
+
+//----------Create a task
 export const createTask = async (req, res) => {
   try {
     const { title, description, is_complete, user_id } = req.body;
@@ -86,7 +88,7 @@ export const createTask = async (req, res) => {
         user_id,
       });
       return res.status(201).json({
-        message: 'Task created',
+        message: "Task created",
         task,
       });
     } else {
@@ -100,6 +102,7 @@ export const createTask = async (req, res) => {
   }
 };
 
+//----------Get all the tasks
 export const getAllTasks = async (req, res) => {
   try {
     const task = await Task.findAll({
@@ -118,7 +121,7 @@ export const getAllTasks = async (req, res) => {
     });
     if (task) {
       return res.status(200).json({
-        message:'All tasks and users founded',
+        message: "All tasks and users founded",
         task,
       });
     }
@@ -127,6 +130,7 @@ export const getAllTasks = async (req, res) => {
   }
 };
 
+//----------Get one task
 export const getTask = async (req, res) => {
   try {
     const { id } = req.params;
@@ -137,7 +141,7 @@ export const getTask = async (req, res) => {
       include: [
         {
           model: User,
-          as:'Author',
+          as: "Author",
           attributes: {
             exclude: ["password"],
           },
@@ -146,7 +150,7 @@ export const getTask = async (req, res) => {
     });
     if (task) {
       return res.status(200).json({
-        message: 'Task founded', 
+        message: "Task founded",
         task,
       });
     } else {
@@ -159,6 +163,7 @@ export const getTask = async (req, res) => {
   }
 };
 
+//----------Update a task
 export const updateTask = async (req, res) => {
   try {
     const { title, description } = req.body;
@@ -247,6 +252,7 @@ export const updateTask = async (req, res) => {
   }
 };
 
+//----------Delete a task
 export const deleteTask = async (req, res) => {
   const { id } = req.params;
   try {
