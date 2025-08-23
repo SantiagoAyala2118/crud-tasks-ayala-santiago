@@ -15,16 +15,18 @@ export const ProfilePicture = sequelize.define(
     },
   },
   {
-    timestamps: false,
+    paranoid: true,
+    createdAt: false,
+    updatedAt: false,
   }
 );
 
-User.hasOne(ProfilePicture, {
-  foreignKey: "user_id",
-  sourceKey: "id",
-});
 ProfilePicture.belongsTo(User, {
   foreignKey: "user_id",
   as: "User",
   targetKey: "id",
+});
+User.hasOne(ProfilePicture, {
+  foreignKey: "user_id",
+  sourceKey: "id",
 });
