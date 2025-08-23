@@ -67,6 +67,30 @@ export const getAllProfilePictures = async (req, res) => {
   }
 };
 
+//----------Get one profile picture
+export const getOneProfilePicture = async (req, res) => {
+  try {
+    const profile_picture = await ProfilePicture.findByPk(req.params.id);
+    if (profile_picture) {
+      return res.status(200).json({
+        message: "Profile picture founded",
+        profile_picture,
+      });
+    } else {
+      return res.status(404).json({
+        message: "There are no profile picture with that id in de DB",
+      });
+    }
+  } catch (err) {
+    console.error(
+      "A server error has occurred while getting a profile picture"
+    );
+    return res.status(500).json({
+      message: "A server error has occurred while getting a profile picture",
+    });
+  }
+};
+
 //-----------Update profile picture
 export const updateProfilePicture = async (req, res) => {
   try {
