@@ -66,3 +66,49 @@ export const getAllProfilePictures = async (req, res) => {
     });
   }
 };
+
+//-----------Update profile picture
+export const updateProfilePicture = async (req, res) => {
+  try {
+    const profile_picture = await ProfilePicture.update(req.body, {
+      where: { id: req.params.id },
+    });
+
+    if (profile_picture.length > 0) {
+      return res.status(201).json({
+        message: "profile picture updated",
+      });
+    } else {
+      return res.status(400).json({
+        message: "There is no profile picture with that id",
+      });
+    }
+  } catch (err) {
+    console.error(
+      "An error has occurred while updating a profile picture",
+      err
+    );
+    return res.status(500).json({
+      message: "An error has occurred while updating a profile picture",
+    });
+  }
+};
+
+//-----------Delete profile picture
+export const deleteProfilePicture = async (req, res) => {
+  try {
+    await ProfilePicture.destroy({ where: { id: req.params.id } });
+    return res.status(410).json({
+      message: "PFP Destroyed",
+    });
+    console.log("PFP Destroyed");
+  } catch (err) {
+    console.error(
+      "A server has occurred while deleting a profile picture",
+      err
+    );
+    return res.status(500).json({
+      message: "A server error has occurred while deleting a profile picture",
+    });
+  }
+};
