@@ -1,5 +1,7 @@
 import { sequelize } from "../config/database.js";
 import { DataTypes } from "sequelize";
+import { User } from "./users.model.js";
+
 export const Task = sequelize.define(
   "Task",
   {
@@ -21,3 +23,15 @@ export const Task = sequelize.define(
     timestamps: false,
   }
 );
+
+Task.belongsTo(User, {
+  foreignKey: "user_id",
+  as: "Author",
+  targetKey: "id",
+  onDelete: "CASCADE",
+});
+
+User.hasMany(Task, {
+  foreignKey: "user_id",
+  sourceKey: "id",
+});
