@@ -30,11 +30,13 @@ User.belongsToMany(Project, {
   through: UserProject,
   foreignKey: "user_id",
   sourceKey: "id",
+  onDelete: "CASCADE",
 });
 Project.belongsToMany(User, {
   through: UserProject,
   foreignKey: "project_id",
   targetKey: "id",
+  onDelete: "CASCADE",
 });
 
 //Relaciondes DESDE la tabla intermedia a otras tablas
