@@ -87,3 +87,81 @@ export const getAllUsersProjects = async (req, res) => {
     );
   }
 };
+
+//---------Get one user_project
+export const getOneUserProject = async (req, res) => {
+  try {
+    const user_project = await UserProject.findByPk(req.params.id);
+    if (user_project) {
+      return res.status(200).json({
+        message: "User projects founded",
+        user_project,
+      });
+    } else {
+      return res.status(404).json({
+        message: "There is no an user_project register in the DB",
+      });
+    }
+  } catch (err) {
+    console.error(
+      "A server error has occurres while trying to get one user project",
+      err
+    );
+    return res.status(500).json({
+      message:
+        "A server error has occurres while trying to get one user project",
+    });
+  }
+};
+
+//--------Update user_project
+export const updateUserProject = async (req, res) => {
+  try {
+    const user_project = await UserProject.findByPk(req.params.id);
+    if (user_project) {
+      await UserProject.update(req.body, { where: { id: req.params.id } });
+      return res.status(201).json({
+        message: "Register updated correctly",
+      });
+    } else {
+      return res.status(400).json({
+        message: "There is no register in the DB with that id",
+      });
+    }
+  } catch (err) {
+    console.error(
+      "A server error has occurres while trying to update one user project",
+      err
+    );
+    return res.status(500).json({
+      message:
+        "A server error has occurres while trying to update one user project",
+    });
+  }
+};
+
+//---------Delete user_project
+export const deleteUserProject = async (req, res) => {
+  try {
+    const user_project = await UserProject.findByPk(req.params.id);
+    if (user_project) {
+      await UserProject.destroy({ where: { id: req.params.id } });
+      return res.status(410).json({
+        message: "Register deleted correctly",
+      });
+    } else {
+      return res.status(400).json({
+        message: "There is no a register with that id in the DB",
+      });
+    }
+  } catch (err) {
+    console.error(
+      "A server error has occurres while trying to delete one user project",
+      err
+    );
+    return res.status(500).json({
+      message:
+        "A server error has occurres while trying to delete one user project",
+    });
+  }
+};
