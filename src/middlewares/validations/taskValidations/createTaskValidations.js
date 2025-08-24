@@ -11,11 +11,19 @@ export const createTaskValidations = [
     .isString()
     .withMessage("Title must be a string")
     .custom(async (title) => {
-      const existingTitle = await Task.findOne({ where: { title } });
-      if (existingTitle) {
-        throw new Error("That task already exists in the DB, use other title");
+      try {
+        const existingTitle = await Task.findOne({ where: { title } });
+        if (existingTitle) {
+          return Promise.reject(
+            "That task already exists in the DB, use other title"
+          );
+        }
+        return true;
+      } catch (err) {
+        return Promise.reject(
+          "Error trying to check the existency of that title"
+        );
       }
-      return true;
     }),
   body("description")
     .notEmpty()
@@ -40,10 +48,16 @@ export const createTaskValidations = [
     .isInt({ gt: 0 })
     .withMessage("User_id field must be an int (number) superior to zero (0)")
     .custom(async (user_id) => {
-      const existingUser = await User.findByPk(user_id);
-      if (!existingUser) {
-        throw new Error("There are no user with that id in the DB");
+      try {
+        const existingUser = await User.findByPk(user_id);
+        if (!existingUser) {
+          return Promise.reject("There are no user with that id in the DB");
+        }
+        return true;
+      } catch (err) {
+        return Promise.reject(
+          "Error trying to check the existency of that user"
+        );
       }
-      return true;
     }),
 ];
