@@ -1,0 +1,15 @@
+import { param } from "express-validator";
+import { Project } from "../../../models/projects.model.js";
+
+export const deleteProjectValidations = [
+  param("id")
+    .isInt({ gt: 0 })
+    .withMessage("The id param must be a number greater that zero (0)")
+    .custom(async (id) => {
+      const existingProject = await Project.findByPk(id);
+      if (!existingProject) {
+        throw new Error("There is no project with that id in the DB");
+      }
+      return true;
+    }),
+];
