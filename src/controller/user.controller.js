@@ -6,13 +6,10 @@ import { matchedData } from "express-validator";
 export const createUser = async (req, res) => {
   try {
     const validatedData = matchedData(req);
-    console.log(validatedData);
     const user = await User.create(validatedData);
-    if (user) {
-      return res.status(201).json({
-        message: user,
-      });
-    }
+    return res.status(201).json({
+      message: user,
+    });
   } catch (err) {
     console.error("An error has happened while creating an user", err);
   }
