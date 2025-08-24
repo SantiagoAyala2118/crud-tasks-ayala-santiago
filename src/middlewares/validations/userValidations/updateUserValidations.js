@@ -21,11 +21,17 @@ export const updateUserValidations = [
     .withMessage("Email must be valid")
     .isLength({ min: 12 })
     .custom(async (email) => {
-      const existingUser = await User.findOne({ where: { email } });
-      if (existingUser) {
-        throw new Error("Email already in use");
+      try {
+        const existingUser = await User.findOne({ where: { email } });
+        if (existingUser) {
+          return Promise.reject("Email already in use");
+        }
+        return true;
+      } catch (err) {
+        return Promise.reject(
+          "Error trying to check the existency of that email"
+        );
       }
-      return true;
     }),
   body("password")
     .optional()
@@ -40,10 +46,16 @@ export const updateUserValidations = [
     .isString()
     .withMessage("The id param must be a number")
     .custom(async (id) => {
-      const existingUser = await User.findByPk(id);
-      if (!existingUser) {
-        throw new Error("There is no user with that id in the DB");
+      try {
+        const existingUser = await User.findByPk(id);
+        if (!existingUser) {
+          return Promise.reject("There is no user with that id in the DB");
+        }
+        return true;
+      } catch (err) {
+        return Promise.reject(
+          "Error trying to check the existency of that user"
+        );
       }
-      return true;
     }),
 ];

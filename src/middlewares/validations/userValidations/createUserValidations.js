@@ -2,7 +2,6 @@ import { body } from "express-validator";
 import { User } from "../../../models/users.model.js";
 
 export const createUserValidations = [
-  //BODY
   body("name")
     .notEmpty()
     .withMessage("The name must not be empty")
@@ -19,11 +18,16 @@ export const createUserValidations = [
     .withMessage("Email must be valid")
     .isLength({ min: 12 })
     .custom(async (email) => {
-      const existingUser = await User.findOne({ where: { email } });
-      if (existingUser) {
-        throw new Error("Email already in use");
+      try {
+        const existingUser = await User.findOne({ where: { email } });
+        if (existingUser) {
+          return Promise.reject("Email already in use");
+        }
+      } catch (err) {
+        return Promise.reject(
+          "Error trying to check the viability of the email"
+        );
       }
-      return true;
     }),
   body("password")
     .notEmpty()

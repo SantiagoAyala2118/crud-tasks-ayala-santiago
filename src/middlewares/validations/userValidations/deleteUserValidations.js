@@ -6,10 +6,16 @@ export const deleteUserValidation = [
     .isString()
     .withMessage("The id param must be a number")
     .custom(async (id) => {
-      const existingUser = await User.findByPk(id);
-      if (!existingUser) {
-        throw new Error("There is no user with that id in the DB");
+      try {
+        const existingUser = await User.findByPk(id);
+        if (!existingUser) {
+          return Promise.reject("There is no user with that id in the DB");
+        }
+        return true;
+      } catch (err) {
+        return Promise.reject(
+          "Error trying to check the existency of the user"
+        );
       }
-      return true;
     }),
 ];
