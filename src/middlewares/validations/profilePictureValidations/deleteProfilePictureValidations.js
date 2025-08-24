@@ -6,9 +6,9 @@ export const deleteProfilePictureValidations = [
     .isString()
     .withMessage("The id param must be a number")
     .custom(async (id) => {
-      const existingUser = await User.findByPk(id);
-      if (!existingUser) {
-        throw new Error("There is no user with that id in the DB");
+      const existingProfilePicture = await ProfilePicture.findByPk(id);
+      if (!existingProfilePicture) {
+        throw new Error("There is no profile picture with that id in the DB");
       }
       return true;
     }),
