@@ -6,10 +6,16 @@ export const deleteProfilePictureValidations = [
     .isString()
     .withMessage("The id param must be a number")
     .custom(async (id) => {
-      const existingProfilePicture = await ProfilePicture.findByPk(id);
-      if (!existingProfilePicture) {
-        throw new Error("There is no profile picture with that id in the DB");
+      try {
+        const existingProfilePicture = await ProfilePicture.findByPk(id);
+        if (!existingProfilePicture) {
+          return Promise.reject(
+            "There is no profile picture with that id in the DB"
+          );
+        }
+        return true;
+      } catch (err) {
+        return Promise.reject("Error trying to check the existency of that id");
       }
-      return true;
     }),
 ];

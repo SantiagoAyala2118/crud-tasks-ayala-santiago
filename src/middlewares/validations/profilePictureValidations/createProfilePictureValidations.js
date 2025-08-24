@@ -11,15 +11,21 @@ export const createProfilePictureValidations = [
     .isString()
     .withMessage("Url must be a string")
     .custom(async (url) => {
-      const existingProfilePicture = await ProfilePicture.findOne({
-        where: { url },
-      });
-      if (existingProfilePicture) {
-        throw new Error(
-          "Tnere is already a profile picture with that url in the DB"
+      try {
+        const existingProfilePicture = await ProfilePicture.findOne({
+          where: { url },
+        });
+        if (existingProfilePicture) {
+          return Promise.reject(
+            "Tnere is already a profile picture with that url in the DB"
+          );
+        }
+        return true;
+      } catch (err) {
+        return Promise.reject(
+          "Error trying to check the viability of that url"
         );
       }
-      return true;
     }),
   body("description")
     .notEmpty()
@@ -34,10 +40,14 @@ export const createProfilePictureValidations = [
     .isInt({ gt: 0 })
     .withMessage("The user_id field must be a number greater than zero (0)")
     .custom(async (user_id) => {
-      const existingUser = await User.findByPk(user_id);
-      if (!existingUser) {
-        throw new Error("There is no user with that id in the DB");
+      try {
+        const existingUser = await User.findByPk(user_id);
+        if (!existingUser) {
+          return Promise.reject("There is no user with that id in the DB");
+        }
+        return true;
+      } catch (err) {
+        return Promise.reject("Error trying to check the existency of that id");
       }
-      return true;
     }),
 ];
