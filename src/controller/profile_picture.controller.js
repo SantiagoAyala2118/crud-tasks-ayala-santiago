@@ -1,45 +1,19 @@
 import { ProfilePicture } from "../models/profile_picture.model.js";
 import { User } from "../models/users.model.js";
+import { matchedData } from "express-validator";
 
 //----------Create a profile picture
 export const createProfilePicture = async (req, res) => {
   try {
-    const { url, description, user_id } = req.body;
-
-    if (!url || !user_id) {
-      return res.status(400).json({
-        message: "The url and the user_id are neccessary",
-      });
-    }
-
-    if (typeof user_id !== "number") {
-      return res.status(400).json({
-        message: "The user_id must be a number",
-      });
-    }
-
-    const userExisting = await User.findByPk(user_id);
-
-    if (!userExisting) {
-      return res.status(404).json({
-        message: "There is no user with that user_id in the database",
-      });
-    }
-
-    const profilePicture = await ProfilePicture.create({
-      url,
-      description,
-      user_id,
+    const validatedData = matchedData(req);
+    const profilePicture = await ProfilePicture.create(validatedData);
+    return res.status(201).json({
+      message: "Profile picture created",
+      profilePicture,
     });
-    if (profilePicture) {
-      return res.status(201).json({
-        message: "Profile picture created",
-        profilePicture,
-      });
-    }
   } catch (err) {
     console.error(
-      "An error has occurred while creating a profile picture",
+      "A server error has occurred while creating a profile picture",
       err
     );
   }
@@ -70,20 +44,24 @@ export const getAllProfilePictures = async (req, res) => {
 //----------Get one profile picture
 export const getOneProfilePicture = async (req, res) => {
   try {
-    const profile_picture = await ProfilePicture.findByPk(req.params.id);
-    if (profile_picture) {
-      return res.status(200).json({
-        message: "Profile picture founded",
-        profile_picture,
-      });
-    } else {
-      return res.status(404).json({
-        message: "There are no profile picture with that id in de DB",
-      });
-    }
+    const profile_picture = await ProfilePicture.findByPk(req.params.id, {
+      attributes: {
+        exclude: ["user_id"],
+      },
+      include: {
+        model: User,
+        as: "User",
+        attributes: { exclude: ["password"] },
+      },
+    });
+    return res.status(200).json({
+      message: "Here is the profile picture",
+      profile_picture,
+    });
   } catch (err) {
     console.error(
-      "A server error has occurred while getting a profile picture"
+      "A server error has occurred while getting a profile picture",
+      err
     );
     return res.status(500).json({
       message: "A server error has occurred while getting a profile picture",
@@ -94,19 +72,14 @@ export const getOneProfilePicture = async (req, res) => {
 //-----------Update profile picture
 export const updateProfilePicture = async (req, res) => {
   try {
-    const profile_picture = await ProfilePicture.update(req.body, {
+    const validatedData = matchedData(req);
+    await ProfilePicture.update(validatedData, {
       where: { id: req.params.id },
     });
 
-    if (profile_picture.length > 0) {
-      return res.status(201).json({
-        message: "profile picture updated",
-      });
-    } else {
-      return res.status(400).json({
-        message: "There is no profile picture with that id",
-      });
-    }
+    return res.status(200).json({
+      message: "Profile picture updated",
+    });
   } catch (err) {
     console.error(
       "An error has occurred while updating a profile picture",
