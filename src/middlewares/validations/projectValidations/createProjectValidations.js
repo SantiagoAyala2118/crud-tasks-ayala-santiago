@@ -10,13 +10,19 @@ export const createProjectValidations = [
     .isLength({ min: 5, max: 100 })
     .withMessage("Name must have at least 5 characters and a maximum of 100")
     .custom(async (name) => {
-      const existingProject = await Project.findOne({ where: { name } });
-      if (existingProject) {
-        throw new Error(
-          "There already exist a project with that name in the DB"
+      try {
+        const existingProject = await Project.findOne({ where: { name } });
+        if (existingProject) {
+          return Promise.reject(
+            "There already exist a project with that name in the DB"
+          );
+        }
+        return true;
+      } catch (err) {
+        return Promise.reject(
+          "Error trying to check the existency of that name"
         );
       }
-      return true;
     }),
   body("description")
     .notEmpty()

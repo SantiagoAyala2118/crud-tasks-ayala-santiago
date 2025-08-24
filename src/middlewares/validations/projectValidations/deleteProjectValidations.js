@@ -6,10 +6,14 @@ export const deleteProjectValidations = [
     .isInt({ gt: 0 })
     .withMessage("The id param must be a number greater that zero (0)")
     .custom(async (id) => {
-      const existingProject = await Project.findByPk(id);
-      if (!existingProject) {
-        throw new Error("There is no project with that id in the DB");
+      try {
+        const existingProject = await Project.findByPk(id);
+        if (!existingProject) {
+          return Promise.reject("There is no project with that id in the DB");
+        }
+        return true;
+      } catch (err) {
+        return Promise.reject("Error trying to check the existency of that id");
       }
-      return true;
     }),
 ];
