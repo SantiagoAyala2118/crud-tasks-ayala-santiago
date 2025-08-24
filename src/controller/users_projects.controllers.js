@@ -1,51 +1,24 @@
 import { UserProject } from "../models/users_projects.model.js";
 import { User } from "../models/users.model.js";
 import { Project } from "../models/projects.model.js";
+import { matchedData } from "express-validator";
 
 //----------Create an user project
 export const createUserProject = async (req, res) => {
   try {
-    const { user_id, project_id } = req.body;
+    const validatedData = matchedData(req);
 
-    if (!user_id || !project_id) {
-      return res.status(400).json({
-        message: "The user_id and project_id are neccessary",
-      });
-    }
+    const userProject = await UserProject.create(validatedData);
 
-    if (typeof user_id !== "number" || typeof project_id !== "number") {
-      return res.status(400).json({
-        message: "The user_id and project_id must be a number",
-      });
-    }
-
-    const userIdExistig = await User.findByPk(user_id);
-    if (!userIdExistig) {
-      return res.status(400).json({
-        message: "There are no users with that id in the database",
-      });
-    }
-
-    const projectIdExisting = await Project.findByPk(project_id);
-    if (!projectIdExisting) {
-      return res.status(400).json({
-        message: "There are no projects with that id in the database",
-      });
-    }
-
-    const userProject = await UserProject.create({
-      user_id,
-      project_id,
+    return res.status(201).json({
+      message: "The register has been created",
+      userProject,
     });
-
-    if (userProject) {
-      return res.status(201).json({
-        message: "The register has been created",
-        userProject,
-      });
-    }
   } catch (err) {
-    console.error("An error has occurred while creating an user project", err);
+    console.error(
+      "A server error has occurred while creating an user project",
+      err
+    );
   }
 };
 
@@ -91,17 +64,31 @@ export const getAllUsersProjects = async (req, res) => {
 //---------Get one user_project
 export const getOneUserProject = async (req, res) => {
   try {
-    const user_project = await UserProject.findByPk(req.params.id);
-    if (user_project) {
-      return res.status(200).json({
-        message: "User projects founded",
-        user_project,
-      });
-    } else {
-      return res.status(404).json({
-        message: "There is no an user_project register in the DB",
-      });
-    }
+    const user_project = await UserProject.findByPk(req.params.id, {
+      attributes: {
+        exclude: ["user_id", "project_id"],
+      },
+      include: [
+        {
+          model: User,
+          as: "User",
+          attributes: {
+            exclude: ["password", "id"],
+          },
+        },
+        {
+          model: Project,
+          as: "Project",
+          attributes: {
+            exclude: ["id"],
+          },
+        },
+      ],
+    });
+    return res.status(200).json({
+      message: "User projects founded",
+      user_project,
+    });
   } catch (err) {
     console.error(
       "A server error has occurres while trying to get one user project",
@@ -117,17 +104,12 @@ export const getOneUserProject = async (req, res) => {
 //--------Update user_project
 export const updateUserProject = async (req, res) => {
   try {
-    const user_project = await UserProject.findByPk(req.params.id);
-    if (user_project) {
-      await UserProject.update(req.body, { where: { id: req.params.id } });
-      return res.status(201).json({
-        message: "Register updated correctly",
-      });
-    } else {
-      return res.status(400).json({
-        message: "There is no register in the DB with that id",
-      });
-    }
+    const validatedData = matchedData(req);
+
+    await UserProject.update(validatedData, { where: { id: req.params.id } });
+    return res.status(201).json({
+      message: "Register updated correctly",
+    });
   } catch (err) {
     console.error(
       "A server error has occurres while trying to update one user project",
@@ -143,17 +125,10 @@ export const updateUserProject = async (req, res) => {
 //---------Delete user_project
 export const deleteUserProject = async (req, res) => {
   try {
-    const user_project = await UserProject.findByPk(req.params.id);
-    if (user_project) {
-      await UserProject.destroy({ where: { id: req.params.id } });
-      return res.status(410).json({
-        message: "Register deleted correctly",
-      });
-    } else {
-      return res.status(400).json({
-        message: "There is no a register with that id in the DB",
-      });
-    }
+    await UserProject.destroy({ where: { id: req.params.id } });
+    return res.status(410).json({
+      message: "Register deleted correctly",
+    });
   } catch (err) {
     console.error(
       "A server error has occurres while trying to delete one user project",
