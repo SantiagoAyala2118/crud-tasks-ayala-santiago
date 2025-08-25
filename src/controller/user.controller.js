@@ -88,11 +88,8 @@ export const updateUser = async (req, res) => {
 export const deleteUser = async (req, res) => {
   const { id } = req.params;
   try {
-    const user = await User.destroy({
-      where: {
-        id,
-      },
-    });
+    const user = await User.findByPk(id);
+    await user.destroy();
     if (user) {
       return res.status(200).json({
         message: "The user has been removed",
