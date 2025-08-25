@@ -28,7 +28,6 @@ Task.belongsTo(User, {
   foreignKey: "user_id",
   as: "Author",
   targetKey: "id",
-  onDelete: "CASCADE",
 });
 
 User.hasMany(Task, {
