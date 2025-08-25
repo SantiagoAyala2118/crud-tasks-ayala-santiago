@@ -22,6 +22,7 @@ export const updateUserProjectValidations = [
     }),
   body("user_id")
     .optional()
+    .trim()
     .notEmpty()
     .withMessage("The user_id cannot be empty")
     .isInt({ gt: 0 })
@@ -41,6 +42,7 @@ export const updateUserProjectValidations = [
     }),
   body("project_id")
     .optional()
+    .trim()
     .notEmpty()
     .withMessage("The project_id cannot be empty")
     .isInt({ gt: 0 })

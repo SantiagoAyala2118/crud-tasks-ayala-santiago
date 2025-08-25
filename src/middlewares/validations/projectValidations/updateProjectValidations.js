@@ -18,6 +18,7 @@ export const updateProjectValidations = [
     }),
   body("name")
     .optional()
+    .trim()
     .notEmpty()
     .withMessage("Name cannot be empty")
     .isString()
@@ -41,6 +42,7 @@ export const updateProjectValidations = [
     }),
   body("description")
     .optional()
+    .trim()
     .notEmpty()
     .withMessage("Description cannot be empty")
     .isString()

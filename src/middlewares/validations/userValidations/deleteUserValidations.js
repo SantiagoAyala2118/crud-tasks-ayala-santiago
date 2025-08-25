@@ -3,7 +3,7 @@ import { User } from "../../../models/users.model.js";
 
 export const deleteUserValidation = [
   param("id")
-    .isString()
+    .isInt()
     .withMessage("The id param must be a number")
     .custom(async (id) => {
       try {

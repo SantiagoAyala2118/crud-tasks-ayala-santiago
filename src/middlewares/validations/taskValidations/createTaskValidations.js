@@ -4,6 +4,7 @@ import { User } from "../../../models/users.model.js";
 
 export const createTaskValidations = [
   body("title")
+    .trim()
     .notEmpty()
     .withMessage("Title cannot be empty")
     .isLength({ min: 5, max: 100 })
@@ -26,6 +27,7 @@ export const createTaskValidations = [
       }
     }),
   body("description")
+    .trim()
     .notEmpty()
     .withMessage("Description cannot be empty")
     .isString()
@@ -38,11 +40,13 @@ export const createTaskValidations = [
     .withMessage("Description must be a string"),
   body("is_complete")
     .optional()
+    .trim()
     .notEmpty()
     .withMessage("If you insert an is_complete field, it cannot be empty")
     .isBoolean()
     .withMessage("Is_complete field must be boolean value (true or false)"),
   body("user_id")
+    .trim()
     .notEmpty()
     .withMessage("User_id field cannot be empty")
     .isInt({ gt: 0 })

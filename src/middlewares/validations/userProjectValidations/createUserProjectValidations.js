@@ -4,6 +4,7 @@ import { Project } from "../../../models/projects.model.js";
 
 export const createUserProjectValidations = [
   body("user_id")
+    .trim()
     .notEmpty()
     .withMessage("User_id field cannot be empty")
     .isInt({ gt: 0 })
@@ -21,6 +22,7 @@ export const createUserProjectValidations = [
       }
     }),
   body("project_id")
+    .trim()
     .notEmpty()
     .withMessage("Project_id cannot be empty")
     .isInt({ gt: 0 })

@@ -21,6 +21,7 @@ export const updateProfilePictureValidations = [
     }),
   body("url")
     .optional()
+    .trim()
     .notEmpty()
     .withMessage("Url field cannot be empty")
     .isURL()
@@ -46,6 +47,7 @@ export const updateProfilePictureValidations = [
     }),
   body("description")
     .optional()
+    .trim()
     .notEmpty()
     .withMessage("Description field cannot be empty")
     .isString()
@@ -56,6 +58,7 @@ export const updateProfilePictureValidations = [
     ),
   body("user_id")
     .optional()
+    .trim()
     .isInt({ gt: 0 })
     .withMessage("The user_id field must be a number greater than zero (0)")
     .custom(async (user_id) => {

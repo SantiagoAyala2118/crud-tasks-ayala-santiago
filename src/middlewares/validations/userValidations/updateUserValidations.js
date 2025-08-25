@@ -5,6 +5,7 @@ export const updateUserValidations = [
   //BODY
   body("name")
     .optional()
+    .trim()
     .notEmpty()
     .withMessage("The name must not be empty")
     .isLength({ min: 5 })
@@ -13,6 +14,7 @@ export const updateUserValidations = [
     .withMessage("Name must be a string"),
   body("email")
     .optional()
+    .trim()
     .notEmpty()
     .withMessage("Email cannot be empty")
     .isString()
@@ -35,6 +37,7 @@ export const updateUserValidations = [
     }),
   body("password")
     .optional()
+    .trim()
     .notEmpty()
     .withMessage("Password is required")
     .isString()
@@ -43,7 +46,7 @@ export const updateUserValidations = [
     .withMessage("Password must be at least 8 characters"),
   //PARAMS
   param("id")
-    .isString()
+    .isInt()
     .withMessage("The id param must be a number")
     .custom(async (id) => {
       try {

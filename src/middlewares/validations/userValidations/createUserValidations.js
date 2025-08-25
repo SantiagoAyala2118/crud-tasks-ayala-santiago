@@ -3,6 +3,7 @@ import { User } from "../../../models/users.model.js";
 
 export const createUserValidations = [
   body("name")
+    .trim()
     .notEmpty()
     .withMessage("The name must not be empty")
     .isLength({ min: 5 })
@@ -10,6 +11,7 @@ export const createUserValidations = [
     .isString()
     .withMessage("Name must be a string"),
   body("email")
+    .trim()
     .notEmpty()
     .withMessage("Email cannot be empty")
     .isString()
@@ -30,6 +32,7 @@ export const createUserValidations = [
       }
     }),
   body("password")
+    .trim()
     .notEmpty()
     .withMessage("Password is required")
     .isString()

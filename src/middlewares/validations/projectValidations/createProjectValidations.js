@@ -3,6 +3,7 @@ import { Project } from "../../../models/projects.model.js";
 
 export const createProjectValidations = [
   body("name")
+    .trim()
     .notEmpty()
     .withMessage("Name cannot be empty")
     .isString()
@@ -25,6 +26,7 @@ export const createProjectValidations = [
       }
     }),
   body("description")
+    .trim()
     .notEmpty()
     .withMessage("Description cannot be empty")
     .isString()

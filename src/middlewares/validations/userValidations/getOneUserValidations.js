@@ -3,13 +3,13 @@ import { User } from "../../../models/users.model.js";
 
 export const getOneUserValidations = [
   param("id")
-    .isString()
+    .isInt()
     .withMessage("The id param must be a number")
     .custom(async (id) => {
       try {
         const existingUser = await User.findByPk(id);
         if (!existingUser) {
-          throw new Error("There is no user with that id in the DB");
+          return Promise.reject("There is no user with that id in the DB");
         }
         return true;
       } catch (err) {

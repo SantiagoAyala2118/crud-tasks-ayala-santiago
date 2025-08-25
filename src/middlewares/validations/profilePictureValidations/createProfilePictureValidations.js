@@ -4,6 +4,7 @@ import { User } from "../../../models/users.model.js";
 
 export const createProfilePictureValidations = [
   body("url")
+    .trim()
     .notEmpty()
     .withMessage("Url field cannot be empty")
     .isURL()
@@ -28,6 +29,7 @@ export const createProfilePictureValidations = [
       }
     }),
   body("description")
+    .trim()
     .notEmpty()
     .withMessage("Description field cannot be empty")
     .isString()
@@ -37,6 +39,9 @@ export const createProfilePictureValidations = [
       "Description must have at least 10 characters and a maximum of 100"
     ),
   body("user_id")
+    .trim()
+    .notEmpty()
+    .withMessage("The user_id cannot be empty")
     .isInt({ gt: 0 })
     .withMessage("The user_id field must be a number greater than zero (0)")
     .custom(async (user_id) => {
