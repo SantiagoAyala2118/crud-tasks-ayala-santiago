@@ -98,7 +98,6 @@ export const deleteProfilePicture = async (req, res) => {
     return res.status(410).json({
       message: "PFP Destroyed",
     });
-    console.log("PFP Destroyed");
   } catch (err) {
     console.error(
       "A server has occurred while deleting a profile picture",
