@@ -19,6 +19,8 @@ export const User = sequelize.define(
     },
   },
   {
-    timestamps: false,
+    paranoid: true,
+    createdAt: false,
+    updatedAt: false,
   }
 );
